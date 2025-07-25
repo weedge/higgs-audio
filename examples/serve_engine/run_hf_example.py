@@ -4,8 +4,7 @@ import os
 import time
 
 import torch
-
-# import torchaudio
+#import torchaudio
 from loguru import logger
 import click
 import soundfile
@@ -24,7 +23,7 @@ def main(example: str):
     test(example, MODEL_PATH, AUDIO_TOKENIZER_PATH)
 
 
-def test(example: str, model_path: str, audio_tokenizer_path: str, out_dir="./"):
+def test(example: str, model_path: str, audio_tokenizer_path: str, save_path=""):
     input_sample = INPUT_SAMPLES[example]()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     logger.info(f"Using device: {device}")
@@ -47,7 +46,7 @@ def test(example: str, model_path: str, audio_tokenizer_path: str, out_dir="./")
     )
     elapsed_time = time.time() - start_time
 
-    save_path = os.path.join(out_dir, f"output_{example}.wav")
+    save_path = f"./output_{example}.wav" if not save_path else save_path
     soundfile.write(save_path, output.audio, output.sampling_rate)
     info = soundfile.info(save_path, verbose=True)
 
