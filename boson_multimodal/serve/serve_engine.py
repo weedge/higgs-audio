@@ -218,7 +218,8 @@ class HiggsAudioServeEngine:
         self.model = HiggsAudioModel.from_pretrained(
             model_name_or_path,
             torch_dtype=torch_dtype,
-            attn_implementation="flash_attention_2" if gpu_major >= 8 and self.torch_dtype == torch.bfloat16 else None,
+            # `static` cache implementation is not compatible with `attn_implementation==flash_attention_2` make sure to use `sdpa`
+            #attn_implementation="flash_attention_2" if gpu_major >= 8 and self.torch_dtype == torch.bfloat16 else None,
         ).to(device)
         logger.info(f"Loaded model from {model_name_or_path}, dtype: {self.model.dtype}, device: {device}")
 
