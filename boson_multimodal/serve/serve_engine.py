@@ -408,7 +408,9 @@ class HiggsAudioServeEngine:
             if len(outputs[1]) > 0:
                 wv_list = []
                 for output_audio in outputs[1]:
+                    # (num_codebooks, seq_len + num_codebooks - 1) -> (num_codebooks, seq_len)
                     vq_code = revert_delay_pattern(output_audio).clip(0, self.audio_codebook_size - 1)[:, 1:-1]
+                    logger.info(f"vq_code shape: {vq_code.shape} {self.audio_codebook_size=} {vq_code=}")
                     wv_numpy = self.audio_tokenizer.decode(vq_code.unsqueeze(0))[0, 0]
                     wv_list.append(wv_numpy)
                 wv_numpy = np.concatenate(wv_list)

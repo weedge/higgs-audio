@@ -1411,7 +1411,6 @@ class HiggsAudioModel(HiggsAudioPreTrainedModel, GenerationMixin):
 
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
         if not return_dict:
-            logger.info(f"HiggsAudioModel forward {ret=}")
             outputs = ret.to_tuple()
             return outputs
 
