@@ -1,11 +1,16 @@
 """Example for using HiggsAudio for generating both the transcript and audio in an interleaved manner."""
 
-from boson_multimodal.serve.serve_engine import HiggsAudioServeEngine, HiggsAudioResponse
-import torch
-import torchaudio
+import os
 import time
+
+import torch
+
+# import torchaudio
 from loguru import logger
 import click
+import soundfile
+
+from boson_multimodal.serve.serve_engine import HiggsAudioServeEngine, HiggsAudioResponse
 
 from input_samples import INPUT_SAMPLES
 
@@ -19,7 +24,7 @@ def main(example: str):
     test(example, MODEL_PATH, AUDIO_TOKENIZER_PATH)
 
 
-def test(example: str, model_path: str, audio_tokenizer_path: str):
+def test(example: str, model_path: str, audio_tokenizer_path: str, out_dir="./"):
     input_sample = INPUT_SAMPLES[example]()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     logger.info(f"Using device: {device}")
@@ -41,11 +46,19 @@ def test(example: str, model_path: str, audio_tokenizer_path: str):
         stop_strings=["<|end_of_text|>", "<|eot_id|>"],
     )
     elapsed_time = time.time() - start_time
-    logger.info(f"Generation time: {elapsed_time:.2f} seconds")
 
-    torchaudio.save(f"output_{example}.wav", torch.from_numpy(output.audio)[None, :], output.sampling_rate)
+    save_path = os.path.join(out_dir, f"output_{example}.wav")
+    soundfile.write(save_path, output.audio, output.sampling_rate)
+    info = soundfile.info(save_path, verbose=True)
+
+    # torchaudio.save(save_path, torch.from_numpy(output.audio)[None, :], output.sampling_rate)
+
+    print(info)
     logger.info(f"Generated text:\n{output.generated_text}")
-    logger.info(f"Saved audio to output_{example}.wav")
+    logger.info(
+        f"Generation time: {elapsed_time:.2f} seconds, duration: {info.duration:.2f} seconds, RTF: {(elapsed_time / info.duration):.2f}"
+    )
+    logger.info(f"Saved audio to {save_path}")
 
 
 if __name__ == "__main__":

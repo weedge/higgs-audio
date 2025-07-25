@@ -757,6 +757,7 @@ def gen(
     )
 
     sf.write(out_path, concat_wv, sr)
+    logger.info(f"{text_output=}")
     logger.info(f"Wav file is saved to '{out_path}' with sample rate {sr}")
 
 
