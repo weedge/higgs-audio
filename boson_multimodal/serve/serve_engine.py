@@ -206,10 +206,21 @@ class HiggsAudioServeEngine:
         self.device = device
         self.model_name_or_path = model_name_or_path
         self.torch_dtype = torch_dtype
+        if isinstance(torch_dtype, str) and torch_dtype != "auto":
+            self.torch_dtype = getattr(torch, torch_dtype)
+
+        gpu_major = 0
+        if torch.cuda.is_available():
+            gpu_prop = torch.cuda.get_device_properties("cuda")
+            gpu_major = gpu_prop.major
 
         # Initialize model and tokenizer
-        self.model = HiggsAudioModel.from_pretrained(model_name_or_path, torch_dtype=torch_dtype).to(device)
-        logger.info(f"Loaded model from {model_name_or_path}, dtype: {self.model.dtype}")
+        self.model = HiggsAudioModel.from_pretrained(
+            model_name_or_path,
+            torch_dtype=torch_dtype,
+            attn_implementation="flash_attention_2" if gpu_major >= 8 and self.torch_dtype == torch.bfloat16 else None,
+        ).to(device)
+        logger.info(f"Loaded model from {model_name_or_path}, dtype: {self.model.dtype}, device: {device}")
 
         if tokenizer_name_or_path is None:
             tokenizer_name_or_path = model_name_or_path
