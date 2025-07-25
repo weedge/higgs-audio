@@ -615,6 +615,52 @@ def main(
     out_path,
     use_static_kv_cache,
 ):
+    gen(
+        model_path,
+        audio_tokenizer,
+        max_new_tokens,
+        transcript,
+        scene_prompt,
+        temperature,
+        top_k,
+        top_p,
+        ras_win_len,
+        ras_win_max_num_repeat,
+        ref_audio,
+        ref_audio_in_system_message,
+        chunk_method,
+        chunk_max_word_num,
+        chunk_max_num_turns,
+        generation_chunk_buffer_size,
+        seed,
+        device_id,
+        out_path,
+        use_static_kv_cache,
+    )
+
+
+def gen(
+    model_path,
+    audio_tokenizer,
+    max_new_tokens,
+    transcript,
+    scene_prompt,
+    temperature,
+    top_k,
+    top_p,
+    ras_win_len,
+    ras_win_max_num_repeat,
+    ref_audio,
+    ref_audio_in_system_message,
+    chunk_method,
+    chunk_max_word_num,
+    chunk_max_num_turns,
+    generation_chunk_buffer_size,
+    seed,
+    device_id,
+    out_path,
+    use_static_kv_cache,
+):
     if device_id is None:
         if torch.cuda.is_available():
             device_id = 0

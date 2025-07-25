@@ -16,13 +16,17 @@ AUDIO_TOKENIZER_PATH = "bosonai/higgs-audio-v2-tokenizer"
 @click.command()
 @click.argument("example", type=click.Choice(list(INPUT_SAMPLES.keys())))
 def main(example: str):
+    test(example, MODEL_PATH, AUDIO_TOKENIZER_PATH)
+
+
+def test(example: str, model_path: str, audio_tokenizer_path: str):
     input_sample = INPUT_SAMPLES[example]()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     logger.info(f"Using device: {device}")
 
     serve_engine = HiggsAudioServeEngine(
-        MODEL_PATH,
-        AUDIO_TOKENIZER_PATH,
+        model_path,
+        audio_tokenizer_path,
         device=device,
     )
 
