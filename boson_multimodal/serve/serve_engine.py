@@ -219,7 +219,7 @@ class HiggsAudioServeEngine:
             model_name_or_path,
             torch_dtype=torch_dtype,
             # `static` cache implementation is not compatible with `attn_implementation==flash_attention_2` make sure to use `sdpa`
-            #attn_implementation="flash_attention_2" if gpu_major >= 8 and self.torch_dtype == torch.bfloat16 else None,
+            # attn_implementation="flash_attention_2" if gpu_major >= 8 and self.torch_dtype == torch.bfloat16 else None,
         ).to(device)
         logger.info(f"Loaded model from {model_name_or_path}, dtype: {self.model.dtype}, device: {device}")
 
@@ -403,6 +403,7 @@ class HiggsAudioServeEngine:
                 ras_win_max_num_repeat=ras_win_max_num_repeat,
                 seed=seed,
             )
+            logger.info(f"generate {outputs=}")
 
             if len(outputs[1]) > 0:
                 wv_list = []
