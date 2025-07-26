@@ -1851,6 +1851,7 @@ class HiggsAudioModel(HiggsAudioPreTrainedModel, GenerationMixin):
                     # If the token is audio bos token, we will generate the audio placeholder token
                     # and the corrensponding audio stream bos token to start the audio generation.
                     audio_sequences.append(next_audio_tokens[:, None])
+                    logger.info(f"{audio_sequences=}")
                     if streamer is not None:
                         streamer.put(next_audio_tokens.cpu())
                     if model_kwargs["audio_out_ids"] is None or model_kwargs["audio_out_ids"].shape[0] == 0:

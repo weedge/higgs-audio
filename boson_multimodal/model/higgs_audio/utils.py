@@ -93,7 +93,7 @@ def revert_delay_pattern(data):
 
     Args:
         data (:obj:`torch.Tensor`):
-            The data with delay pattern applied. It will have shape (num_codebooks, seq_len + num_codebooks - 1).
+            The data with delay pattern applied. It will have shape (num_codebooks, seq_len + num_codebooks + 1).
 
     Returns:
         ret (:obj:`torch.Tensor`):
