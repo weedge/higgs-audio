@@ -1672,7 +1672,7 @@ class HiggsAudioModel(HiggsAudioPreTrainedModel, GenerationMixin):
             `return_dict_in_generate=True` or a [`~generation.GenerateEncoderDecoderOutput`] if
             `model.config.is_encoder_decoder=True`.
         """
-        print(f"input_ids: {input_ids.shape}, {input_ids=}")
+        print(f"input_ids: {input_ids.shape}, {input_ids=}, {model_kwargs=}")
         assert input_ids.shape[0] == 1, "Only support batch_size=1 in _sample()"
         audio_out_bos_token_id = generation_config.generation_kwargs.get("audio_out_bos_token_id", None)
 
@@ -1829,7 +1829,7 @@ class HiggsAudioModel(HiggsAudioPreTrainedModel, GenerationMixin):
                     [model_kwargs["audio_out_ids"], next_audio_tokens[:, None]], dim=-1
                 )
                 audio_sequences[-1] = torch.cat([audio_sequences[-1], next_audio_tokens[:, None]], dim=-1)
-                print(f"{audio_sequences=}")
+                print(f"{audio_sequences.shape=}")
 
                 if streamer is not None:
                     streamer.put(next_audio_tokens.cpu())
