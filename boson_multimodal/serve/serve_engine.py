@@ -103,6 +103,7 @@ class AsyncHiggsAudioStreamer(BaseStreamer):
         For text tokens, decodes and caches them until complete words are formed.
         For audio tokens, directly queues them.
         """
+        logger.info(f"{value=}, {value.shape=}, {self.next_tokens_are_prompt=}")
         if value.shape[0] > 1 and not self.next_tokens_are_prompt:
             # This is likely audio tokens (shape: [audio_num_codebooks])
             assert value.shape[0] == self.audio_num_codebooks, "Number of codebooks mismatch"
@@ -403,11 +404,13 @@ class HiggsAudioServeEngine:
                 ras_win_max_num_repeat=ras_win_max_num_repeat,
                 seed=seed,
             )
-            logger.info(f"generate {outputs=}")
+            assert isinstance(outputs, tuple), f"Expected outputs to be a tuple, got {type(outputs)}"
+            logger.info(f"generate text_ids.shape {outputs[0].shape=}")
 
             if len(outputs[1]) > 0:
                 wv_list = []
                 for output_audio in outputs[1]:
+                    logger.info(f"generate audio_ids.shape {output_audio.shape=}")
                     # (num_codebooks, seq_len + num_codebooks - 1) -> (num_codebooks, seq_len)
                     vq_code = revert_delay_pattern(output_audio).clip(0, self.audio_codebook_size - 1)[:, 1:-1]
                     logger.info(f"vq_code shape: {vq_code.shape} {self.audio_codebook_size=} {vq_code=}")
