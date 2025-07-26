@@ -1829,7 +1829,7 @@ class HiggsAudioModel(HiggsAudioPreTrainedModel, GenerationMixin):
                     [model_kwargs["audio_out_ids"], next_audio_tokens[:, None]], dim=-1
                 )
                 audio_sequences[-1] = torch.cat([audio_sequences[-1], next_audio_tokens[:, None]], dim=-1)
-                print(f"{audio_sequences.shape=}")
+                print(f"{audio_sequences[-1].shape=}")
 
                 if streamer is not None:
                     streamer.put(next_audio_tokens.cpu())
